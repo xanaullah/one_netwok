@@ -11,7 +11,6 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Update profile information
     if (isset($_POST['update_profile'])) {
         $first_name = htmlspecialchars(trim($_POST['first_name']));
         $last_name = htmlspecialchars(trim($_POST['last_name']));
@@ -32,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    // Upload profile image
     if (isset($_FILES['profile_image'])) {
         $file = $_FILES['profile_image'];
         $file_name = basename($file['name']);
@@ -46,12 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($file_error === 0) {
             if (in_array($file_ext, $allowed_extensions) && $file_size <= 2 * 1024 * 1024) {  // 2MB limit
                 $new_file_name = uniqid('', true) . '.' . $file_ext;
-                $file_destination = 'uploads/' . $new_file_name;
+                $file_destination = 'uploads/images' . $new_file_name;
 
                 if (move_uploaded_file($file_tmp, $file_destination)) {
                     // Update profile image in the database
                     $stmt = $conn->prepare("UPDATE users SET profile_image = ? WHERE id = ?");
-                    $stmt->bind_param("si", $file_destination, $user_id);
+                    $stmt->bind_param("si", $new_file_name, $user_id);
 
                     if ($stmt->execute()) {
                         $success = "Profile image updated successfully.";
@@ -145,7 +143,9 @@ $stmt->close();
         <h1>Your Profile</h1>
         <div class="profile-image-container">
             <?php if ($profile_image): ?>
-                <img src="<?= htmlspecialchars($profile_image) ?>" alt="Profile Image">
+                <img src="serve_image.php?file=<?= htmlspecialchars($profile_image) ?>" alt="Profile Image">
+            <?php else: ?>
+                <img src="default-profile.png" alt="Default Profile Image">
             <?php endif; ?>
         </div>
     </div>
