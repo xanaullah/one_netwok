@@ -1,3 +1,7 @@
 # Prevent direct access to files in the uploads directory
 Order Allow,Deny
 Deny from all
+# Allow access through the serve_image.php script
+<FilesMatch "\.(jpg|jpeg|png|gif)$">
+    Allow from all
+</FilesMatch>
