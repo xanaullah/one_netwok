@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($file_error === 0) {
             if (in_array($file_ext, $allowed_extensions) && $file_size <= 2 * 1024 * 1024) {  // 2MB limit
                 $new_file_name = uniqid('', true) . '.' . $file_ext;
-                $file_destination = 'uploads/images' . $new_file_name;
+                $file_destination = 'uploads/images/' . $new_file_name;
 
                 if (move_uploaded_file($file_tmp, $file_destination)) {
                     // Update profile image in the database
